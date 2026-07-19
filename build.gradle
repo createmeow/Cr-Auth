@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.crskin'
+version = '1.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.11.0'
+    implementation 'org.xerial:sqlite-jdbc:3.49.1.0'
+    // authlib-injector 已编译类
+    implementation files('authlib-injector-embedded.jar')
+}
+
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'com.crskin.CrSkinAllAgent',
+            'Premain-Class': 'com.crskin.CrSkinAllAgent',
+            'Agent-Class': 'com.crskin.CrSkinAllAgent',
+            'Can-Retransform-Classes': 'true',
+            'Can-Redefine-Classes': 'true'
+        )
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
